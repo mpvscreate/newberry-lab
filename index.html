@@ -326,7 +326,7 @@ main{flex:1;max-width:1400px;width:100%;margin:0 auto;padding:18px 20px 60px;}
 /* ============== TABLES ============== */
 .table-scroll{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--surface-border);}
 table.inv-table{width:100%;border-collapse:collapse;font-size:13.5px;}
-table.inv-table.editable-table{table-layout:fixed;min-width:900px;}
+table.inv-table.editable-table{table-layout:fixed;min-width:1100px;}
 table.inv-table:not(.editable-table){min-width:600px;}
 table.inv-table thead th{
   position:sticky;top:0;
@@ -345,6 +345,7 @@ table.inv-table tbody td{
   border-bottom:1px solid var(--surface-border);
   color:var(--text-primary);
   vertical-align:middle;
+  overflow:hidden;text-overflow:ellipsis;
 }
 table.inv-table tbody tr:last-child td{border-bottom:none;}
 table.inv-table tbody tr{transition:background .12s ease;}
@@ -547,19 +548,12 @@ td .del-row-btn svg{width:14px;height:14px;}
 
 /* ============== HAZARD BADGE (inline) ============== */
 .hazard-pill{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:2px 8px;border-radius:99px;font-size:11px;font-weight:700;
-  letter-spacing:.3px;white-space:nowrap;
+  display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0;
 }
-.hazard-pill::before{content:"";width:6px;height:6px;border-radius:50%;display:inline-block;}
-.hazard-low{background:var(--ok-bg);color:var(--ok);}
-.hazard-low::before{background:var(--ok);}
-.hazard-moderate{background:var(--warn-bg);color:var(--warn);}
-.hazard-moderate::before{background:var(--warn);}
-.hazard-high{background:var(--danger-bg);color:var(--danger);}
-.hazard-high::before{background:var(--danger);}
-.hazard-controlled{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger);}
-.hazard-controlled::before{background:var(--danger);}
+.hazard-low{background:var(--ok);}
+.hazard-moderate{background:var(--warn);}
+.hazard-high{background:var(--danger);}
+.hazard-controlled{background:var(--danger);box-shadow:0 0 0 2px var(--danger-bg);}
 
 /* ============== MINI CHART (reports) ============== */
 .mini-chart{display:flex;align-items:flex-end;gap:5px;height:52px;margin-top:10px;}
@@ -1028,7 +1022,7 @@ function conditionBadge(condition){
 }
 function hazardBadge(hazard){
   const key = String(hazard||"").toLowerCase().replace(/[^a-z]/g,"");
-  return `<span class="hazard-pill hazard-${key}">${escapeHtml(hazard)}</span>`;
+  return `<span class="hazard-pill hazard-${key}" title="${escapeHtml(hazard)}"></span>`;
 }
 function stockBar(cur, req){
   const pct = req>0 ? Math.min(100, Math.round((cur/req)*100)) : 100;
@@ -1628,7 +1622,7 @@ function bindChemicalsEvents(container){
           input._rrTimer=setTimeout(()=>{ renderDashboard(); rerenderActiveTab(true); },350);
         }else if(field==="hazard"){
           const pill=input.closest("td").querySelector(".hazard-pill");
-          if(pill){ pill.className="hazard-pill hazard-"+val.toLowerCase().replace(/[^a-z]/g,""); pill.textContent=val; }
+          if(pill){ pill.className="hazard-pill hazard-"+val.toLowerCase().replace(/[^a-z]/g,""); pill.title=val; }
           renderDashboard();
         }else{
           renderDashboard();
